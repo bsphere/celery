@@ -56,7 +56,10 @@ func (t *Task) MarshalJSON() ([]byte, error) {
 
 	out["task"] = t.Task
 	out["id"] = t.Id
-	out["args"] = t.Args
+
+	if t.Args != nil {
+		out["args"] = t.Args
+	}
 
 	if t.KWArgs != nil {
 		out["kwargs"] = t.KWArgs
