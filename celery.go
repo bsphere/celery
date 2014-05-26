@@ -1,5 +1,7 @@
 // Package celery provides a Golang client library for
 // calling Celery tasks using an AMQP backend,
+// it depends on channels created by http://github.com/streadway/amqp,
+//
 // for additional info see http://www.celeryproject.org
 package celery
 
