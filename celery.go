@@ -52,27 +52,30 @@ func NewTask(task string, args []string, kwargs map[string]interface{}) (*Task, 
 // Marshals a Task object into JSON bytes array,
 // time objects are converted to UTC and formatted in ISO8601
 func (t *Task) MarshalJSON() ([]byte, error) {
-	out := make(map[string]interface{})
-
-	out["task"] = t.Task
-	out["id"] = t.Id
-
-	if t.Args != nil {
-		out["args"] = t.Args
+	type FormattedTask struct {
+		Task    string                 `json:"task"`
+		Id      string                 `json:"id"`
+		Args    []string               `json:"args,omitempty"`
+		KWArgs  map[string]interface{} `json:"kwargs,omitempty"`
+		Retries int                    `json:"retries,omitempty"`
+		ETA     string                 `json:"eta,omitempty"`
+		Expires string                 `json:"expires,omitempty"`
 	}
 
-	if t.KWArgs != nil {
-		out["kwargs"] = t.KWArgs
+	out := FormattedTask{
+		Task:    t.Task,
+		Id:      t.Id,
+		Args:    t.Args,
+		KWArgs:  t.KWArgs,
+		Retries: t.Retries,
 	}
-
-	out["retries"] = t.Retries
 
 	if !t.ETA.IsZero() {
-		out["eta"] = t.ETA.UTC().Format(timeFormat)
+		out.ETA = t.ETA.UTC().Format(timeFormat)
 	}
 
 	if !t.Expires.IsZero() {
-		out["expires"] = t.Expires.UTC().Format(timeFormat)
+		out.Expires = t.Expires.UTC().Format(timeFormat)
 	}
 
 	return json.Marshal(out)
